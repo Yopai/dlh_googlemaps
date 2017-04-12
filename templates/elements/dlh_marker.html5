@@ -54,6 +54,9 @@
 <?php 	if ($this->element['zIndex']) : ?>
 	marker_options.zIndex = <?php echo $this->element['zIndex']; ?>;
 <?php 	endif; ?>
+<?php 	if ($this->element['category']) : ?>
+	marker_options.category = <?php echo json_encode($this->element['category']); ?>;
+<?php   endif; ?>
 
 	var marker = new google.maps.Marker(marker_options);
 	this.markers.push(marker);

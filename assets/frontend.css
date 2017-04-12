@@ -1,1 +1,5 @@
-.dlh_googlemap img {max-width:none}.dlh_googlemap .routinglink{white-space:nowrap}
+.dlh_googlemap img { max-width:none }
+.dlh_googlemap .routinglink{ white-space:nowrap }
+
+.dlh_googlemap.list { float:right; }
+.dlh_googlemap.categories li { display:inline-block; }

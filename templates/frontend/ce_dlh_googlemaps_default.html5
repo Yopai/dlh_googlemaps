@@ -5,6 +5,8 @@
 <<?php echo $this->hl; ?>><?php echo $this->headline; ?></<?php echo $this->hl; ?>>
 <?php endif; ?>
 
+<div class="dlh_googlemap list" id="dlh_googlemap_<?php echo $this->map['id']; ?>_list"></div>
+
 <div class="dlh_googlemap block" id="dlh_googlemap_<?php echo $this->map['id']; ?>"
 	 style="width:<?php echo $this->map['mapSize'][0].$this->map['mapSize'][2]; ?>;height:<?php echo $this->map['mapSize'][1].$this->map['mapSize'][2]; ?>;>
 	<noscript>
@@ -12,10 +14,31 @@
 	</noscript>
 </div>
 
+<?php
+	$arrCategories = array();
+	foreach ($this->map['elements'] AS $element) {
+		$categories = explode(',', $element['category']);
+		foreach ($categories as $category) {
+			$category = trim($category);
+			$arrCategories[$category] = ($category ? $category : '(No category)');
+		}
+	}
+	if ($arrCategories && current($arrCategories)) :
+?>
+<div class="dlh_googlemap categories" id="dlh_googlemap_<?php echo $this->map['id']; ?>_categories">
+	<ul>
+<?php foreach ($arrCategories as $category => $label) : ?>
+		<li><input type="checkbox" value="<?php echo htmlentities($category); ?>" checked="true" /><?php echo htmlentities($label); ?></li>
+<?php endforeach; ?>
+	</ul>
+</div>
+<?php endif; ?>
+
 <script>
 	var gmap<?php echo $this->map['id']; ?> = {
 		initialize: function() {
 			this.id = <?php echo json_encode($this->map['id']); ?>;
+			this.dom_id = <?php echo json_encode('dlh_googlemap_'.$this->map['id']); ?>;
 			this.options = {
 				center                 : new google.maps.LatLng(<?php echo $this->map['center']; ?>),
 				mapTypeId              : google.maps.MapTypeId.<?php echo $this->map['mapTypeId']; ?>,
@@ -125,6 +148,84 @@
 <?php
 			// tabcontrol
 			echo $this->tabs ? $this->map['tabsCode'] : ''; ?>
+
+			this.make_sidebar();
+			this.make_categories();
+		},
+
+		show_category: function(category, show) {
+			var i, j;
+			if (!show) {
+				var all_categories = [];
+				var found;
+				jQuery('#' + this.dom_id + '_categories input').each(function () {
+					if (this.checked) {
+						all_categories[all_categories.length] = $(this).attr('value');
+					}
+				});
+			}
+			for (i=0; i<this.markers.length; i++) {
+				if (show) {
+					categories = this.markers[i].category.split(',');
+					for (c = 0; c < categories.length; c++) {
+						if (categories[c] == category) {
+							this.markers[i].setVisible(show);
+							c = categories.length;
+						}
+					}
+				}
+				else if (this.markers[i].getVisible()) {
+					categories = this.markers[i].category.split(',');
+					found = false;
+					for (c1 = 0; c1 <all_categories.length; c1++) {
+						for (c = 0; c < categories.length; c++) {
+							if (categories[c] == all_categories[c1]) {
+								c  = categories.length;
+								c1 = all_categories.length;
+								found = true;
+							}
+						}
+					}
+					if (!found) {
+						this.markers[i].setVisible(show);
+						if (this.markers[i].infowindow) {
+							this.markers[i].infowindow.close();
+						}
+					}
+				}
+			}
+			// == (un)check the checkbox ==
+			jQuery('#'+this.dom_id+'_categories input[value="'+category+'"]').prop('checked', show);
+		},
+
+		box_clicked: function(input) {
+			this.show_category(input.value, input.checked);
+			this.make_sidebar();
+		},
+
+		make_sidebar: function() {
+			jQuery('#'+this.dom_id+'_list').html('');
+			var e;
+			for (var i=0; i<this.markers.length; i++) {
+				if (this.markers[i].getVisible()) {
+					e = $('<div class="item"><a href="#" onclick="return false">'+this.markers[i].title+'</a></div>');
+					jQuery('#'+this.dom_id+'_list').append(e);
+					this.assign_event(e, this.markers[i]);
+				}
+			}
+		},
+
+		assign_event: function(e, marker) {
+			e.find('a').on('click', function() {
+				google.maps.event.trigger(marker, 'click');
+			});
+		},
+
+		make_categories: function() {
+			var _this = this;
+			jQuery('#'+this.dom_id+'_categories input').each(function() {
+				$(this).on('click', function() { _this.box_clicked(this); });
+			});
 		}
 	}
 
