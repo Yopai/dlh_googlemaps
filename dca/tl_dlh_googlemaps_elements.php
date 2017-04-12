@@ -586,7 +586,7 @@ $GLOBALS['TL_DCA']['tl_dlh_googlemaps_elements'] = array
  *
  * Provide miscellaneous methods that are used by the data configuration array.
  * @copyright  Christian de la Haye 2010
- * @author     Christian de la Haye 
+ * @author     Christian de la Haye
  * @package    Controller
  */
 class tl_dlh_googlemaps_elements extends Backend
@@ -679,7 +679,7 @@ class tl_dlh_googlemaps_elements extends Backend
 		if (!$row['published'])
 		{
 			$icon = 'invisible.gif';
-		}		
+		}
 
 		return '<a href="'.$this->addToUrl($href).'" title="'.specialchars($title).'"'.$attributes.'>'.Image::getHtml($icon, $label).'</a> ';
 	}
@@ -701,7 +701,7 @@ class tl_dlh_googlemaps_elements extends Backend
 
         $objVersions = new Versions('tl_dlh_googlemaps_elements', $intId);
         $objVersions->initialize();
-	
+
 		// Trigger the save_callback
 		if (is_array($GLOBALS['TL_DCA']['tl_dlh_googlemaps_elements']['fields']['published']['save_callback']))
 		{

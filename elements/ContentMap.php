@@ -49,7 +49,7 @@ class ContentMap extends \ContentElement
 
 			return '<h1>'.$objMap->title.'</h1>';
 		}
-		
+
 		return parent::generate();
 	}
 
@@ -62,7 +62,7 @@ class ContentMap extends \ContentElement
         global $objPage;
 
 	$objRootPage = \Database::getInstance()->prepare("select dlh_googlemaps_apikey from tl_page where id=?")->limit(1)->execute($objPage->rootId);
-	
+
         // Contao framework sets images to max-width 100%, which collides with Google's CSS
         if(!$this->dlh_googlemap_nocss)
         {

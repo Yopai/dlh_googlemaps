@@ -103,7 +103,7 @@ class Googlemap extends \Frontend
             }
         }
 
-        // generate static map begin
+		// generate static map begin
         $arrMap['staticMap'] = '<img src="http'.(\Environment::get('ssl') ? 's' : '').'://maps.google.com/maps/api/staticmap?center=' . $arrMap['center'] . '&amp;zoom=' . $arrMap['zoom'] . '&amp;maptype=' . strtolower($arrMap['mapTypeId']) . '&amp;language=' . $arrMap['language'] . '&amp;size=';
 
         if($arrMap['mapSize'][2] == 'px') {
@@ -250,7 +250,7 @@ class Googlemap extends \Frontend
 
 		//supporting insertags
 		$arrElement['kmlUrl'] =  $this->replaceInsertTags($arrElement['kmlUrl'],false);
-		
+
         switch($arrElement['type']) {
             case 'MARKER':
                 if($arrElement['markerType'] == 'ICON') {
@@ -314,7 +314,7 @@ class Googlemap extends \Frontend
         {
             $strVar = str_replace(" ", "_", $strClass);
             $strVar = str_replace("-", "_", $strVar);
-            
+
             $strCode .= '
                 if(window.addEvent) {
                     var dlh_'.$strVar.' = $$(".'.$strClass.'");
